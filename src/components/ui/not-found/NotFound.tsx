@@ -1,6 +1,6 @@
-import { titleFont } from '@/config';
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
+import { titleFont } from '@/config';
 
 export const NotFound = () => {
   return (

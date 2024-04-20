@@ -1,6 +1,22 @@
 import Link from 'next/link';
-import { IoCartOutline, IoMenuOutline, IoSearchOutline } from 'react-icons/io5';
+import { IoCartOutline, IoSearchOutline } from 'react-icons/io5';
 import { titleFont } from '@/config';
+import { MenuButton, TopMenuItem } from '@/components';
+
+const topMenuOptions = [
+  {
+    href: '/category/men',
+    title: 'Men',
+  },
+  {
+    href: '/category/women',
+    title: 'Women',
+  },
+  {
+    href: '/category/kids',
+    title: 'Kids',
+  },
+];
 
 export const TopMenu = () => {
   return (
@@ -17,24 +33,9 @@ export const TopMenu = () => {
 
       {/* Center Menu */}
       <div className='hidden sm:block'>
-        <Link
-          className='m-2 p-2 rounded-md transition-all hover:bg-gray-100'
-          href={`/category/men`}
-        >
-          Men
-        </Link>{' '}
-        <Link
-          className='m-2 p-2 rounded-md transition-all hover:bg-gray-100'
-          href={`/category/women`}
-        >
-          Women
-        </Link>{' '}
-        <Link
-          className='m-2 p-2 rounded-md transition-all hover:bg-gray-100'
-          href={`/category/kids`}
-        >
-          Kids
-        </Link>
+        {topMenuOptions.map((option) => (
+          <TopMenuItem key={option.href} {...option} />
+        ))}
       </div>
 
       {/* Search, Cart, Menu */}
@@ -52,9 +53,7 @@ export const TopMenu = () => {
           </div>
         </Link>
 
-        <button className='m-2 p-2 rounded-md transition-all hover:bg-gray-100'>
-          Menu
-        </button>
+        <MenuButton />
       </div>
     </nav>
   );
