@@ -12,48 +12,67 @@ import {
 } from 'react-icons/io5';
 import { CloseButton, SidebarItem } from '@/components';
 import { useUiStore } from '@/store';
+import { useSession } from 'next-auth/react';
 
 const menuOptions = [
   {
-    href: '/',
+    href: '/profile',
     title: 'Profile',
     icon: <IoPersonOutline size={20} />,
+    auth: true,
   },
   {
-    href: '/',
+    href: '/orders',
     title: 'Orders',
     icon: <IoTicketOutline size={20} />,
+    auth: true,
   },
   {
-    href: '/',
+    href: '/auth/login',
     title: 'Login',
     icon: <IoLogInOutline size={20} />,
+    auth: false,
   },
   {
     href: '/',
     title: 'Logout',
     icon: <IoLogOutOutline size={20} />,
+    auth: true,
   },
+];
+
+const adminMenuOptions = [
   {
-    href: '/',
+    href: '/admin/products',
     title: 'Products',
     icon: <IoShirtOutline size={20} />,
+    auth: true,
   },
   {
-    href: '/',
+    href: '/admin/orders',
     title: 'Orders',
     icon: <IoTicketOutline size={20} />,
+    auth: true,
   },
   {
-    href: '/',
+    href: '/admin/users',
     title: 'Users',
     icon: <IoPeopleOutline size={20} />,
+    auth: true,
   },
 ];
 
 export const Sidebar = () => {
   const isSideMenuOpen = useUiStore((state) => state.isSideMenuOpen);
   const closeMenu = useUiStore((state) => state.closeSideMenu);
+
+  const { data: session } = useSession();
+  const isAuthenticated = !!session?.user;
+  const isAdmin = session?.user.role === 'admin';
+
+  const filteredMenuOptions = menuOptions.filter(
+    (option) => option.auth === isAuthenticated
+  );
 
   return (
     <div>
@@ -92,16 +111,18 @@ export const Sidebar = () => {
         </div>
 
         {/* Menu */}
-        {menuOptions.slice(0, 4).map((option, index) => (
-          <SidebarItem key={index} {...option} />
+        {filteredMenuOptions.map((option, index) => (
+          <SidebarItem key={index} {...option} closeMenu={closeMenu} />
         ))}
 
         {/* Separator */}
         <div className='w-full h-px bg-gray-200 my-10' />
 
-        {menuOptions.slice(4).map((option, index) => (
-          <SidebarItem key={index} {...option} />
-        ))}
+        {/* Admin Menu */}
+        {isAdmin &&
+          adminMenuOptions.map((option, index) => (
+            <SidebarItem key={index} {...option} closeMenu={closeMenu} />
+          ))}
       </nav>
     </div>
   );

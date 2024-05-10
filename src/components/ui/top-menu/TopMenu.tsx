@@ -1,19 +1,19 @@
 import Link from 'next/link';
 import { IoCartOutline, IoSearchOutline } from 'react-icons/io5';
 import { titleFont } from '@/config';
-import { MenuButton, TopMenuItem } from '@/components';
+import { CartButton, MenuButton, TopMenuItem } from '@/components';
 
 const topMenuOptions = [
   {
-    href: '/category/men',
+    href: '/gender/men',
     title: 'Men',
   },
   {
-    href: '/category/women',
+    href: '/gender/women',
     title: 'Women',
   },
   {
-    href: '/category/kids',
+    href: '/gender/kids',
     title: 'Kids',
   },
 ];
@@ -44,14 +44,7 @@ export const TopMenu = () => {
           <IoSearchOutline className='w-5 h-5' />
         </Link>
 
-        <Link href={'/cart'} className='mx-2'>
-          <div className='relative'>
-            <span className='absolute text-xs text-white rounded-full px-1 font-bold -top-2 bg-blue-700 -right-2'>
-              3
-            </span>
-            <IoCartOutline className='w-5 h-5' />
-          </div>
-        </Link>
+        <CartButton />
 
         <MenuButton />
       </div>

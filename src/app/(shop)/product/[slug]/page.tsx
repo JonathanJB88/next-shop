@@ -1,13 +1,15 @@
+export const revalidate = 604800; // 7 days
+
+import { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
-import { initialData } from '@/seed';
-import { Product } from '@/interfaces';
 import { titleFont } from '@/config';
 import {
   ProductMobileSlideshow,
   ProductSlideshow,
-  QuantitySelector,
-  SizeSelector,
+  StockLabel,
 } from '@/components';
+import { getProductBySlug } from '@/actions';
+import { AddToCart } from './ui/AddToCart';
 
 interface Props {
   params: {
@@ -15,12 +17,27 @@ interface Props {
   };
 }
 
-const products: Product[] = initialData.products;
-
-export default function ProductPage({ params }: Props) {
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const { slug } = params;
+  const product = await getProductBySlug(slug);
 
-  const product = products.find((prod) => prod.slug === slug);
+  return {
+    title: product?.title ?? '',
+    description: product?.description ?? '',
+    openGraph: {
+      title: product?.title ?? '',
+      description: product?.description ?? '',
+      images: [`/products/${product?.images[1]}`],
+    },
+  };
+}
+
+export default async function ProductPage({ params }: Props) {
+  const { slug } = params;
+  const product = await getProductBySlug(slug);
 
   if (!product) return notFound();
 
@@ -45,22 +62,13 @@ export default function ProductPage({ params }: Props) {
 
       {/* Details */}
       <div className='col-span-1 px-5'>
+        <StockLabel slug={slug} />
         <h1 className={`${titleFont.className} antialiased font-bold text-xl`}>
           {product.title}
         </h1>
         <p className='text-lg mb-5'>${product.price}</p>
 
-        {/* Size selector */}
-        <SizeSelector
-          selectedSize={product.sizes[0]}
-          availableSizes={product.sizes}
-        />
-
-        {/* Quantity selector */}
-        <QuantitySelector quantity={2} />
-
-        {/* Add Button */}
-        <button className='btn-primary my-5'>Add to the cart</button>
+        <AddToCart product={product} />
 
         {/* Description */}
         <h3 className='font-bold mb-1'>Description</h3>
